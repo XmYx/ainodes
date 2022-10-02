@@ -70,7 +70,7 @@ export class Txt2imgCollection extends Collection {
         get_carousel(image_array) {
 
           function img(obj){
-            return '<img src="http://localhost:8080/'+obj.src+'" class="content" ondragstart="return false"/>'
+            return '<img src="' + location.protocol + '//' + location.host + obj.src+'" class="content" ondragstart="return false"/>'
           }
 
 
@@ -107,7 +107,7 @@ export class Txt2imgCollection extends Collection {
                 let image = document.getElementById('image');
                 let data_out = aid.model.settings.attr.txt2img
                 console.log(data_out)
-                let response = await this.postData('http://localhost:8080/api/v1/txttoimg/run',data_out)
+                let response = await this.postData('/api/v1/txttoimg/run',data_out)
                 console.log(response)
 
                 this.get_carousel(JSON.parse(response))

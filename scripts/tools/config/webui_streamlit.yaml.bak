@@ -4,27 +4,25 @@
 # of the properties below.
 general:
   gpu: 0
-  outdir: 'outputs'
+  outdir: "outputs"
+  ckpt: "content/models/sd-v1-4.ckpt"
+  clip: "content/models/sd-clip-vit-l14-img-embed_ema_only.ckpt"
+  finetune: "configs/stable-diffusion/sd-image-condition-finetune.yaml"
   default_model: "Stable Diffusion v1.4"
-  default_model_config: "diffusion/configs/stable-diffusion/v1-inference.yaml"
-  default_model_ckpt: "diffusion/models/sd-v1-4.ckpt"
-  default_model_path: "diffusion/models"
-  default_path_mode: "subfolders"
+  default_model_config: "configs/stable-diffusion/v1-inference.yaml"
+  default_model_path: "content/models/sd-v1-4.ckpt"
+  default_path_mode: "root"
   default_path_mode_index: 1
   fp:
   name: ''
   GFPGAN_dir: "./src/gfpgan"
-  gfpgan_dir: "./src/gfpgan"
   RealESRGAN_dir: "./src/realesrgan"
   RealESRGAN_model: "RealESRGAN_x4plus"
-  realesrgan_dir: "./src/realesrgan"
-  realesrgan_model: "RealESRGAN_x4plus"
-  ldsr_dir: "./src/latent-diffusion"
+  LDSR_dir: "./src/latent-diffusion"
   outdir_txt2img: outputs/txt2img-samples
   outdir_img2img: outputs/img2img-samples
   gfpgan_cpu: False
   esrgan_cpu: False
-  outpaint_tmp_path: "./outputs/outpaint_tmp"
   extra_models_cpu: False
   extra_models_gpu: False
   save_metadata: True
@@ -42,6 +40,16 @@ general:
   optimized_config: "optimizedSD/v1-inference.yaml"
   update_preview: True
   update_preview_frequency: 5
+  streamlit_telemetry: False
+  default_theme: dark
+  huggingface_token: ""
+  use_sd_concepts_library: True
+  sd_concepts_library_folder: "models/custom/sd-concepts-library"
+  gfpgan_gpu: 0
+  esrgan_gpu: 0
+  enable_attention_slicing: False
+  enable_minimal_memory_usage : False
+
 
 txt2img:
   prompt:
@@ -61,9 +69,9 @@ txt2img:
   save_grid: True
   group_by_prompt: True
   save_as_jpg: False
-  use_gfpgan: False
-  use_realesrgan: False
-  realesrgan_model: "RealESRGAN_x4plus"
+  use_GFPGAN: False
+  use_RealESRGAN: False
+  RealESRGAN_model: "RealESRGAN_x4plus"
   variant_amount: 0.0
   variant_seed: ""
   write_info_files: True
@@ -127,9 +135,9 @@ txt2vid:
   write_info_files: True
   do_loop: False
   save_as_jpg: False
-  use_gfpgan: False
-  use_realesrgan: False
-  realesrgan_model: "RealESRGAN_x4plus"
+  use_GFPGAN: False
+  use_RealESRGAN: False
+  RealESRGAN_model: "RealESRGAN_x4plus"
   variant_amount: 0.0
   variant_seed: ""
   beta_start: 0.00085
@@ -238,7 +246,7 @@ vid2vid:
 
 
   seed: ""
-  realesrgan_model: "RealESRGAN_x4plus"
+  RealESRGAN_model: "RealESRGAN_x4plus"
   beta_scheduler_type: "linear"
   max_frames: 3
   # @markdown ####**Animation:**
@@ -388,12 +396,35 @@ img2img:
   save_grid: True
   group_by_prompt: True
   save_as_jpg: False
-  use_gfpgan: False
-  use_realesrgan: False
-  realesrgan_model: "RealESRGAN_x4plus"
+  use_GFPGAN: False
+  use_RealESRGAN: False
+  RealESRGAN_model: "RealESRGAN_x4plus"
   variant_amount: 0.0
   variant_seed: ""
   write_info_files: True
 
+img2var:
+
+  var_samples: 4
+  sampler_name: k_lms
+  cfg_scale: 12.0
+  sampling_steps: 30
+  width: 512
+  height: 512
+  ddim_eta: 1.0
+  use_GFPGAN: False
+  bg_upsampling: False
+  upscale:  1
+
 gfpgan:
   strength: 100
+
+concepts_library:
+  concepts_per_page: 12
+
+textual_inversion:
+  pretrained_model_name_or_path: "models/ldm/stable-diffusion-v1-4"
+  tokenizer_name: ""
+
+daisi_app:
+  running_on_daisi_io: False
