@@ -30,3 +30,5 @@ ldm/modules/distributions/__pycache__/distributions.cpython-38.pyc
 ldm/modules/encoders/__pycache__/__init__.cpython-38.pyc
 ldm/modules/encoders/__pycache__/modules.cpython-38.pyc
 models/sd-v1-4.ckpt
+frontend/ui_widgets/__pycache__/__init__.cpython-38.pyc
+frontend/ui_widgets/__pycache__/test_widget.cpython-38.pyc
