@@ -422,8 +422,8 @@ class Generate:
         if self.model is None:
             seed_everything(random.randrange(0, np.iinfo(np.uint32).max))
             try:
-                config = OmegaConf.load("D:/sd/github/ainodes/configs/stable-diffusion/v1-inference.yaml")
-                model = self._load_model_from_config(config, "D:/sd/github/ainodes/models/sd-v1-4.ckpt")
+                config = OmegaConf.load(self.config)
+                model = self._load_model_from_config(config, self.weights)
                 #if self.embedding_path is not None:
                 #    model.embedding_manager.load(
                 #        self.embedding_path, self.full_precision

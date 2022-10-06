@@ -121,8 +121,7 @@ class GenerateWindow(QMainWindow):
             print(f'seed    ={row[1]}')
             output = f'outputs/sample.png'
             row[0].save(output)
-
-        self.image_path = output
+            self.image_path = output
 
     def txt2img_thread(self):
         # Pass the function to execute
