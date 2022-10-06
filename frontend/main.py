@@ -1,4 +1,4 @@
-from frontend.main_window import Ui_MainWindow
+from frontend.main.main_window import Ui_MainWindow
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
