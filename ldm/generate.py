@@ -118,7 +118,6 @@ class Generate:
             embedding_path        = None,
             device_type           = 'cuda',
             ignore_ctrl_c         = False,
-            personalization_config = None
     ):
         self.iterations               = iterations
         self.width                    = width
@@ -143,7 +142,6 @@ class Generate:
         self.generators               = {}
         self.base_generator           = None
         self.seed                     = None
-        self.personalization_config = None
 
         if device_type == 'cuda' and not torch.cuda.is_available():
             device_type = choose_torch_device()
