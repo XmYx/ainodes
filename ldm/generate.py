@@ -118,6 +118,7 @@ class Generate:
             embedding_path        = None,
             device_type           = 'cuda',
             ignore_ctrl_c         = False,
+            personalization_config = None
     ):
         self.iterations               = iterations
         self.width                    = width
@@ -142,6 +143,7 @@ class Generate:
         self.generators               = {}
         self.base_generator           = None
         self.seed                     = None
+        self.personalization_config = None
 
         if device_type == 'cuda' and not torch.cuda.is_available():
             device_type = choose_torch_device()
@@ -159,7 +161,7 @@ class Generate:
         of PNG files, and returns an array of [[filename,seed],[filename,seed]...]
         Optional named arguments are the same as those passed to Generate and prompt2image()
         """
-        results = self.prompt2image( prompt, **kwargs)
+        results = self.prompt2image(prompt, **kwargs)
         pngwriter = PngWriter(outdir)
         prefix = pngwriter.unique_prefix()
         outputs = []
@@ -422,12 +424,12 @@ class Generate:
         if self.model is None:
             seed_everything(random.randrange(0, np.iinfo(np.uint32).max))
             try:
-                config = OmegaConf.load(self.config)
-                model = self._load_model_from_config(config, self.weights)
-                if self.embedding_path is not None:
-                    model.embedding_manager.load(
-                        self.embedding_path, self.full_precision
-                    )
+                config = OmegaConf.load("D:/sd/github/ainodes/configs/stable-diffusion/v1-inference.yaml")
+                model = self._load_model_from_config(config, "D:/sd/github/ainodes/models/sd-v1-4.ckpt")
+                #if self.embedding_path is not None:
+                #    model.embedding_manager.load(
+                #        self.embedding_path, self.full_precision
+                #    )
                 self.model = model.to(self.device)
                 # model.to doesn't change the cond_stage_model.device used to move the tokenizer output, so set it here
                 self.model.cond_stage_model.device = self.device

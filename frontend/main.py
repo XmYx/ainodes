@@ -15,15 +15,110 @@ from PyQt6.QtGui import QIcon, QPixmap
 from diffusers import StableDiffusionPipeline
 
 from ldm.generate import Generate
-gr = Generate()
-
+gr = Generate(  weights     = 'models/sd-v1-4.ckpt',
+                config     = 'configs/stable-diffusion/v1-inference.yaml',
+                )
 from backend.singleton import singleton
 from backend.modelloader import load_models
+from omegaconf import OmegaConf
 
 import backend.settings as settings
 settings.load_settings_json()
 
 gs = singleton
+
+cfg = "configs/stable-diffusion/v1-inference.yaml"
+config = OmegaConf.load(cfg)
+config.model.params.personalization_config.params.embedding_manager_ckpt = (
+    ""
+)
+config.model.params.personalization_config.params.placeholder_tokens = (
+    ""
+)
+
+
+from transformers import CLIPTokenizer, CLIPTextModel
+import clip
+from transformers import BertTokenizerFast
+import sys
+import transformers
+import os
+import warnings
+
+def prepare_loading():
+    transformers.logging.set_verbosity_error()
+
+    # this will preload the Bert tokenizer fles
+    print('preloading bert tokenizer...')
+
+    tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
+    print('...success')
+
+    # this will download requirements for Kornia
+    print('preloading Kornia requirements (ignore the deprecation warnings)...')
+    with warnings.catch_warnings():
+        warnings.filterwarnings('ignore', category=DeprecationWarning)
+        import kornia
+    print('...success')
+
+    version = 'openai/clip-vit-large-patch14'
+
+    print('preloading CLIP model (Ignore the deprecation warnings)...')
+    sys.stdout.flush()
+
+    tokenizer = CLIPTokenizer.from_pretrained(version)
+    transformer = CLIPTextModel.from_pretrained(version)
+    print('\n\n...success')
+
+    # In the event that the user has installed GFPGAN and also elected to use
+    # RealESRGAN, this will attempt to download the model needed by RealESRGANer
+    gfpgan = False
+    try:
+        from realesrgan import RealESRGANer
+
+        gfpgan = True
+    except ModuleNotFoundError:
+        pass
+
+    if gfpgan:
+        print('Loading models from RealESRGAN and facexlib')
+        try:
+            from basicsr.archs.rrdbnet_arch import RRDBNet
+            from facexlib.utils.face_restoration_helper import FaceRestoreHelper
+
+            RealESRGANer(
+                scale=2,
+                model_path='https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth',
+                model=RRDBNet(
+                    num_in_ch=3,
+                    num_out_ch=3,
+                    num_feat=64,
+                    num_block=23,
+                    num_grow_ch=32,
+                    scale=2,
+                ),
+            )
+
+            RealESRGANer(
+                scale=4,
+                model_path='https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth',
+                model=RRDBNet(
+                    num_in_ch=3,
+                    num_out_ch=3,
+                    num_feat=64,
+                    num_block=23,
+                    num_grow_ch=32,
+                    scale=4,
+                ),
+            )
+
+            FaceRestoreHelper(1, det_model='retinaface_resnet50')
+            print('...success')
+        except Exception:
+            import traceback
+
+            print('Error loading GFPGAN:')
+            print(traceback.format_exc())
 
 class WorkerSignals(QObject):
     '''
@@ -118,16 +213,32 @@ class GenerateWindow(QMainWindow):
         self.ui.pushButton.clicked.connect(self.oh_no)
         #self.ui.pushButton.clicked.connect(self.generate)
     def generate(self, progress_callback):
-        personalization_config = None
-        results = gr.prompt2png(prompt     = "an astronaut riding a horse",
-                                outdir     = "./outputs/samples",
-                                iterations = 3)
-
+        gr = Generate(
+            width=512,
+            height=512,
+            sampler_name="ddim",
+            weights="models/sd-v1-4.ckpt",
+            full_precision=False,
+            config="configs/stable-diffusion/v1-inference.yaml",
+            grid=False,
+            # this is solely for recreating the prompt
+            seamless=True,
+            embedding_path=None,
+            device_type='cuda',
+            ignore_ctrl_c=False,
+        )
+        results = gr.prompt2image(prompt   = "an astronaut riding a horse",
+                                    outdir   = "./outputs/")
         for row in results:
             print(f'filename={row[0]}')
             print(f'seed    ={row[1]}')
-            output = f'outputs/samples/{row[0]}'
-        return output
+            output = f'outputs/sample.png'
+            row[0].save(output)
+
+        self.image_path = output
+        #pixmap = QPixmap(output)
+        #self.ui.label.setPixmap(pixmap)
+
 
 
 
@@ -154,8 +265,8 @@ class GenerateWindow(QMainWindow):
         image = pipe(prompt, num_inference_steps=4).images[0]
         image.save("image.png")
 
-    def get_pic(self, image_path):
-        pixmap = QPixmap(image_path)
+    def get_pic(self):
+        pixmap = QPixmap(self.image_path)
         self.ui.label.setPixmap(pixmap)
 
     def oh_no(self):
