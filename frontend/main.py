@@ -1,24 +1,17 @@
-import PIL
-from PyQt6.QtWidgets import QDockWidget
-from frontend.main.main_window import Ui_MainWindow
-from frontend.ui_widgets.test_widget import Ui_Form
+import sys
+import traceback
 
+from PyQt6 import QtCore
+from PyQt6 import QtWidgets as qtw
 from PyQt6 import uic
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import *
-from PIL import Image
-import torch
-
-import sys, traceback, time
-from PyQt6 import QtCore
-from PyQt6 import QtWidgets as qtw
-from PyQt6 import QtCore as qtc
-from PyQt6.QtGui import QIcon, QPixmap
-
-from diffusers import StableDiffusionPipeline
+from PyQt6.QtWidgets import QDockWidget
 
 from ldm.generate import Generate
+
 gr = Generate(  weights     = 'models/sd-v1-4.ckpt',
                 config     = 'configs/stable-diffusion/v1-inference.yaml',
                 )
