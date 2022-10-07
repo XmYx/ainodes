@@ -1,9 +1,9 @@
+import PIL
+from PyQt6.QtWidgets import QDockWidget
 from frontend.main.main_window import Ui_MainWindow
 from frontend.ui_widgets.test_widget import Ui_Form
-from frontend.ui_widgets.txt2img_params import Ui_txt2img_params
 
-from frontend.ui_widgets.animation import Animation
-
+from PyQt6 import uic
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
@@ -98,50 +98,25 @@ class Worker(QRunnable):
             self.signals.result.emit(result)  # Return the result of the processing
         finally:
             self.signals.finished.emit()  # Done
-
-class GenerateWindow(QMainWindow):
+class Txt2img(QDockWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.threadpool = QThreadPool()
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
-        #self.ui = Ui_Form()
-        self.mw = qtw.QMainWindow()
-        self.ui = Ui_MainWindow()
-        self.test = Ui_Form()
-        self.txt2img = Ui_txt2img_params()
+        uic.loadUi("frontend/ui_widgets/txt2img_params.ui", self)
+class Anim(QDockWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
+        uic.loadUi("frontend/ui_widgets/anim.ui", self)
+class Preview(QDockWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-        self.ui.setupUi(self)
-        self.test.setupUi(self)
-        self.txt2img.setupUi(self)
+        uic.loadUi("frontend/ui_widgets/preview.ui", self)
+        self.scene = QGraphicsScene()
 
-        #self.mw.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, self.txt2img.dockWidget)
-        #print(self.dockWidget.preview.scene())
-
-
-
-
-        #self.show()
-        #self.txt2img = self.ui.dockWidget
-        #self.ui.preview = self.ui.dockWidget.preview
-        self.test.scene = QGraphicsScene()
-        self.test.graphicsView.setScene(self.test.scene)
-
-        #self.ui.actionText_2_Image.triggered.connect(self.txt2img.show)
-        self.test.load_btn.clicked.connect(self.test1)
-        #self.ui.pushButton.clicked.connect(self.generate)
-
-    def run_txt2img(self, progress_callback):
-
-        results = gr.prompt2image(prompt   = "an astronaut riding a horse",
-                                    outdir   = "./outputs/")
-        for row in results:
-            print(f'filename={row[0]}')
-            print(f'seed    ={row[1]}')
-            output = f'outputs/sample.png'
-            row[0].save(output)
-            self.image_path = output
+        self.graphicsView.setScene(self.scene)
+        self.test1()
     def test1(self):
         self.image_path = f'outputs/sample.png'
         self.get_pic()
@@ -164,12 +139,74 @@ class GenerateWindow(QMainWindow):
         pic.setPixmap(QPixmap.fromImage(self.image_qt))
 
         #pixmap = QPixmap(self.image_path)
-        self.test.scene.addItem(pic)
+        self.scene.addItem(pic)
         #self.ui.label.setPixmap(pixmap)
+
+
+class GenerateWindow(QMainWindow):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.threadpool = QThreadPool()
+        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+
+        uic.loadUi("frontend/main/main_window.ui", self)
+
+        #dock_widget = load_ui("ui/console.ui", main_window)
+        #main_window.addDockWidget(Qt.LeftDockWidgetArea, dock_widget)
+
+
+        #self.ui = Ui_Form()
+        #self.mw = qtw.QMainWindow()
+        #self.ui = Ui_MainWindow()
+        #self.test = Ui_Form()
+        #self.txt2img = Ui_txt2img_params()
+
+
+        #self.ui.setupUi(self)
+        #self.test.setupUi(self)
+        #self.txt2img.setupUi(self)
+
+        #self.mw.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, self.txt2img.dockWidget)
+        #print(self.dockWidget.preview.scene())
+
+
+
+
+        #self.show()
+        #self.txt2img = self.ui.dockWidget
+        #self.ui.preview = self.ui.dockWidget.preview
+        #self.test.scene = QGraphicsScene()
+        #self.test.graphicsView.setScene(self.test.scene)
+
+        #self.ui.actionText_2_Image.triggered.connect(self.txt2img.show)
+        #self.test.load_btn.clicked.connect(self.test1)
+        #self.ui.pushButton.clicked.connect(self.generate)
+
+    def run_txt2img(self, progress_callback):
+
+        results = gr.prompt2image(prompt   = "an astronaut riding a horse",
+                                    outdir   = "./outputs/")
+        for row in results:
+            print(f'filename={row[0]}')
+            print(f'seed    ={row[1]}')
+            output = f'outputs/sample.png'
+            row[0].save(output)
+            self.image_path = output
+
 
 if __name__ == "__main__":
     app = qtw.QApplication(sys.argv)
 
-    widget = GenerateWindow()
-    widget.show()
+    mainWindow = GenerateWindow()
+    preview = Preview()
+    txt2img = Txt2img()
+    anim = Anim()
+    #preview.scene = QGraphicsScene()
+    #preview.graphicsView.setScene(preview.scene)
+
+    mainWindow.setCentralWidget(preview)
+    mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, txt2img)
+    mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, anim)
+
+    mainWindow.show()
     sys.exit(app.exec())
