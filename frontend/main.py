@@ -1,5 +1,8 @@
 from frontend.main.main_window import Ui_MainWindow
 from frontend.ui_widgets.test_widget import Ui_Form
+from frontend.ui_widgets.txt2img_params import Ui_txt2img_params
+
+from frontend.ui_widgets.animation import Animation
 
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
@@ -8,7 +11,7 @@ from PIL import Image
 import torch
 
 import sys, traceback, time
-
+from PyQt6 import QtCore
 from PyQt6 import QtWidgets as qtw
 from PyQt6 import QtCore as qtc
 from PyQt6.QtGui import QIcon, QPixmap
@@ -105,16 +108,28 @@ class GenerateWindow(QMainWindow):
         #self.ui = Ui_Form()
         self.mw = qtw.QMainWindow()
         self.ui = Ui_MainWindow()
-        self.w1 = Ui_Form()
+        self.test = Ui_Form()
+        self.txt2img = Ui_txt2img_params()
+
 
         self.ui.setupUi(self)
-        self.w1.setupUi(self)
+        self.test.setupUi(self)
+        self.txt2img.setupUi(self)
+
+        #self.mw.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, self.txt2img.dockWidget)
+        #print(self.dockWidget.preview.scene())
+
+
+
 
         #self.show()
-        self.txt2img = self.ui.dockWidget
-        self.test = self.w1.dockWidget
-        self.ui.actionText_2_Image.triggered.connect(self.txt2img.show)
-        self.ui.pushButton.clicked.connect(self.txt2img_thread)
+        #self.txt2img = self.ui.dockWidget
+        #self.ui.preview = self.ui.dockWidget.preview
+        self.test.scene = QGraphicsScene()
+        self.test.graphicsView.setScene(self.test.scene)
+
+        #self.ui.actionText_2_Image.triggered.connect(self.txt2img.show)
+        self.test.load_btn.clicked.connect(self.test1)
         #self.ui.pushButton.clicked.connect(self.generate)
 
     def run_txt2img(self, progress_callback):
@@ -127,6 +142,11 @@ class GenerateWindow(QMainWindow):
             output = f'outputs/sample.png'
             row[0].save(output)
             self.image_path = output
+    def test1(self):
+        self.image_path = f'outputs/sample.png'
+        self.get_pic()
+
+
 
     def txt2img_thread(self):
         # Pass the function to execute
@@ -136,8 +156,16 @@ class GenerateWindow(QMainWindow):
         # Execute
         self.threadpool.start(worker)
     def get_pic(self): #from self.image_path
-        pixmap = QPixmap(self.image_path)
-        self.ui.label.setPixmap(pixmap)
+
+
+        self.image_qt = QImage(self.image_path)
+
+        pic = QGraphicsPixmapItem()
+        pic.setPixmap(QPixmap.fromImage(self.image_qt))
+
+        #pixmap = QPixmap(self.image_path)
+        self.test.scene.addItem(pic)
+        #self.ui.label.setPixmap(pixmap)
 
 if __name__ == "__main__":
     app = qtw.QApplication(sys.argv)
