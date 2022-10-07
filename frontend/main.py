@@ -1,4 +1,6 @@
 from frontend.main.main_window import Ui_MainWindow
+from frontend.ui_widgets.test_widget import Ui_Form
+
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
@@ -103,11 +105,14 @@ class GenerateWindow(QMainWindow):
         #self.ui = Ui_Form()
         self.mw = qtw.QMainWindow()
         self.ui = Ui_MainWindow()
+        self.w1 = Ui_Form()
 
         self.ui.setupUi(self)
+        self.w1.setupUi(self)
 
         #self.show()
         self.txt2img = self.ui.dockWidget
+        self.test = self.w1.dockWidget
         self.ui.actionText_2_Image.triggered.connect(self.txt2img.show)
         self.ui.pushButton.clicked.connect(self.txt2img_thread)
         #self.ui.pushButton.clicked.connect(self.generate)
