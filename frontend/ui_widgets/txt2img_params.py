@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file 'frontend/ui_widgets/txt2img_params.ui'
+# Form implementation generated from reading ui file 'frontend\ui_widgets\txt2img_params.ui'
 #
 # Created by: PyQt6 UI code generator 6.4.0
 #
@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_txt2img_params(object):
     def setupUi(self, txt2img_params):
         txt2img_params.setObjectName("txt2img_params")
-        txt2img_params.resize(148, 527)
+        txt2img_params.resize(218, 590)
         txt2img_params.setStyleSheet("/*\n"
 "    Copyright 2013 Emanuel Claesson\n"
 "\n"
@@ -294,14 +294,16 @@ class Ui_txt2img_params(object):
 "QMenu::separator {\n"
 "    background: #353535;\n"
 "}")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(txt2img_params)
+        self.horizontalLayout.setObjectName("horizontalLayout")
         self.dockWidget = QtWidgets.QDockWidget(txt2img_params)
-        self.dockWidget.setGeometry(QtCore.QRect(0, 0, 141, 521))
         self.dockWidget.setObjectName("dockWidget")
         self.dockWidgetContents = QtWidgets.QWidget()
         self.dockWidgetContents.setObjectName("dockWidgetContents")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.dockWidgetContents)
+        self.verticalLayout.setObjectName("verticalLayout")
         self.stackedWidget = QtWidgets.QStackedWidget(self.dockWidgetContents)
-        self.stackedWidget.setGeometry(QtCore.QRect(0, 0, 150, 500))
-        self.stackedWidget.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.stackedWidget.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.stackedWidget.setObjectName("stackedWidget")
         self.Settings = QtWidgets.QWidget()
         self.Settings.setObjectName("Settings")
@@ -1010,7 +1012,9 @@ class Ui_txt2img_params(object):
         spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.verticalLayout_5.addItem(spacerItem2)
         self.stackedWidget.addWidget(self.Upscaling)
+        self.verticalLayout.addWidget(self.stackedWidget)
         self.dockWidget.setWidget(self.dockWidgetContents)
+        self.horizontalLayout.addWidget(self.dockWidget)
 
         self.retranslateUi(txt2img_params)
         self.stackedWidget.setCurrentIndex(0)

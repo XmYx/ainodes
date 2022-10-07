@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>148</width>
-    <height>527</height>
+    <width>218</width>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -296,46 +296,34 @@ QMenu::separator {
 	background: #353535;
 }</string>
   </property>
-  <widget class="QDockWidget" name="dockWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>141</width>
-     <height>521</height>
-    </rect>
-   </property>
-   <widget class="QWidget" name="dockWidgetContents">
-    <widget class="QStackedWidget" name="stackedWidget">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>150</width>
-       <height>500</height>
-      </rect>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>150</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="Settings">
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QDockWidget" name="dockWidget">
+     <widget class="QWidget" name="dockWidgetContents">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QStackedWidget" name="stackedWidget">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>20</height>
+           <height>16777215</height>
           </size>
          </property>
-         <property name="styleSheet">
-          <string notr="true">/*
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="Settings">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">/*
 	Copyright 2013 Emanuel Claesson
 
 	Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -616,89 +604,89 @@ QProgressBar::chunk {
 QMenu::separator {
 	background: #353535;
 }</string>
-         </property>
-         <property name="text">
-          <string>Height</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="height">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Width</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="width">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Steps</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="steps">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_4">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Samples</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="samples">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_5">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">/*
+             </property>
+             <property name="text">
+              <string>Height</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSlider" name="height">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Width</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSlider" name="width">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Steps</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSlider" name="steps">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Samples</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSlider" name="samples">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">/*
 	Copyright 2013 Emanuel Claesson
 
 	Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
@@ -979,304 +967,308 @@ QProgressBar::chunk {
 QMenu::separator {
 	background: #353535;
 }</string>
-         </property>
-         <property name="text">
-          <string>Batch Size</string>
-         </property>
+             </property>
+             <property name="text">
+              <string>Batch Size</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSlider" name="batchsize">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_6">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Scale</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSlider" name="scale">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_8">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Sampler</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="sampler_n">
+             <item>
+              <property name="text">
+               <string>ddim</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>plms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>klms</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>dpm2</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>dpm2_ancestral</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>heun</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>euler</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>euler_ancestral</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_9">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Sampling Mode</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="sampling_mode">
+             <item>
+              <property name="text">
+               <string>bicubic</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>bilinear</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>nearest</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Seed</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="seed"/>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Seed Behaviour</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="seed_behavior">
+             <item>
+              <property name="text">
+               <string>iter</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>fixed</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>random</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="Files">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QCheckBox" name="checkBox_2">
+             <property name="text">
+              <string>Save as JPG</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_6">
+             <property name="text">
+              <string>Write Info Files</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_5">
+             <property name="text">
+              <string>Group by Prompt</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_4">
+             <property name="text">
+              <string>Save individual Images</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_3">
+             <property name="text">
+              <string>Seperate Prompts</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox">
+             <property name="text">
+              <string>Normalize Prompt </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="Upscaling">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <widget class="QCheckBox" name="checkBox_8">
+             <property name="text">
+              <string>CheckBox</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_7">
+             <property name="text">
+              <string>CheckBox</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBox_4">
+             <item>
+              <property name="text">
+               <string>RealESRGAN_x4plus</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>RealESRGAN_x4plus_anime</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
         </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="batchsize">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_6">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Scale</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSlider" name="scale">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_8">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Sampler</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="sampler_n">
-         <item>
-          <property name="text">
-           <string>ddim</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>plms</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>klms</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>dpm2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>dpm2_ancestral</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>heun</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>euler</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>euler_ancestral</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_9">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Sampling Mode</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="sampling_mode">
-         <item>
-          <property name="text">
-           <string>bicubic</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>bilinear</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>nearest</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_10">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Seed</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="seed"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_11">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Seed Behaviour</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="seed_behavior">
-         <item>
-          <property name="text">
-           <string>iter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>fixed</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>random</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="Files">
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QCheckBox" name="checkBox_2">
-         <property name="text">
-          <string>Save as JPG</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="checkBox_6">
-         <property name="text">
-          <string>Write Info Files</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="checkBox_5">
-         <property name="text">
-          <string>Group by Prompt</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="checkBox_4">
-         <property name="text">
-          <string>Save individual Images</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="checkBox_3">
-         <property name="text">
-          <string>Seperate Prompts</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="checkBox">
-         <property name="text">
-          <string>Normalize Prompt </string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="Upscaling">
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <item>
-        <widget class="QCheckBox" name="checkBox_8">
-         <property name="text">
-          <string>CheckBox</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="checkBox_7">
-         <property name="text">
-          <string>CheckBox</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="comboBox_4">
-         <item>
-          <property name="text">
-           <string>RealESRGAN_x4plus</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>RealESRGAN_x4plus_anime</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
     </widget>
-   </widget>
-  </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
