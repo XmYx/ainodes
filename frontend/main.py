@@ -1,14 +1,8 @@
-import PIL
-from PyQt6.QtWidgets import QDockWidget
-from frontend.main.main_window import Ui_MainWindow
-from frontend.ui_widgets.test_widget import Ui_Form
-
+from ui_classes import *
 from PyQt6 import uic
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
-from PIL import Image
-import torch
 
 import sys, traceback, time
 from PyQt6 import QtCore
@@ -16,19 +10,18 @@ from PyQt6 import QtWidgets as qtw
 from PyQt6 import QtCore as qtc
 from PyQt6.QtGui import QIcon, QPixmap
 
-from diffusers import StableDiffusionPipeline
-
 from ldm.generate import Generate
+
 gr = Generate(  weights     = 'models/sd-v1-4.ckpt',
                 config     = 'configs/stable-diffusion/v1-inference.yaml',
                 )
 
 from backend.singleton import singleton
-
 import backend.settings as settings
 settings.load_settings_json()
 
 gs = singleton
+gs.result = ""
 
 class WorkerSignals(QObject):
     '''
@@ -98,29 +91,49 @@ class Worker(QRunnable):
             self.signals.result.emit(result)  # Return the result of the processing
         finally:
             self.signals.finished.emit()  # Done
-class Txt2img(QDockWidget):
+
+
+
+class GenerateWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.image_path = ""
 
-        uic.loadUi("frontend/ui_widgets/txt2img_params.ui", self)
-class Anim(QDockWidget):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        #print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
-        uic.loadUi("frontend/ui_widgets/anim.ui", self)
-class Preview(QDockWidget):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        uic.loadUi("frontend/main/main_window.ui", self)
 
-        uic.loadUi("frontend/ui_widgets/preview.ui", self)
-        self.scene = QGraphicsScene()
+        self.home()
+    def home(self):
+        self.preview = Preview()
+        self.txt2img = Txt2img()
+        self.anim = Anim()
+        self.prompt = Prompt()
+        self.preview.scene = QGraphicsScene()
+        self.preview.graphicsView.setScene(self.preview.scene)
+        self.txt2img.height_edit.setText(str(self.txt2img.height.value()))
 
-        self.graphicsView.setScene(self.scene)
-        self.test1()
-    def test1(self):
-        self.image_path = f'outputs/sample.png'
-        self.get_pic()
 
+
+
+
+
+        self.setCentralWidget(self.preview)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.txt2img)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.anim)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.prompt)
+
+    def updateHeight(self):
+        self.txt2img.height_edit.setText(str(self.txt2img.height.value()))
+    def run_txt2img(self, progress_callback):
+        results = gr.prompt2image(prompt   = self.prompt.textEdit.toPlainText(),
+                                  outdir   = "./outputs/")
+        for row in results:
+            print(f'filename={row[0]}')
+            print(f'seed    ={row[1]}')
+            output = f'outputs/sample.png'
+            row[0].save(output)
+        self.image_path = output
 
 
     def txt2img_thread(self):
@@ -129,29 +142,20 @@ class Preview(QDockWidget):
         worker.signals.result.connect(self.get_pic)
 
         # Execute
-        self.threadpool.start(worker)
+        threadpool.start(worker)
     def get_pic(self): #from self.image_path
-
-
-        self.image_qt = QImage(self.image_path)
+        print("ok")
+        image_qt = QImage(self.image_path)
 
         pic = QGraphicsPixmapItem()
-        pic.setPixmap(QPixmap.fromImage(self.image_qt))
+        pic.setPixmap(QPixmap.fromImage(image_qt))
 
-        #pixmap = QPixmap(self.image_path)
-        self.scene.addItem(pic)
-        #self.ui.label.setPixmap(pixmap)
+        pixmap = QPixmap(self.image_path)
+        self.preview.scene.addItem(pic)
+    #self.ui.label.setPixmap(pixmap)
 
 
-class GenerateWindow(QMainWindow):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.threadpool = QThreadPool()
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
-
-        uic.loadUi("frontend/main/main_window.ui", self)
-
-        #dock_widget = load_ui("ui/console.ui", main_window)
+    #dock_widget = load_ui("ui/console.ui", main_window)
         #main_window.addDockWidget(Qt.LeftDockWidgetArea, dock_widget)
 
 
@@ -181,32 +185,24 @@ class GenerateWindow(QMainWindow):
         #self.ui.actionText_2_Image.triggered.connect(self.txt2img.show)
         #self.test.load_btn.clicked.connect(self.test1)
         #self.ui.pushButton.clicked.connect(self.generate)
-
-    def run_txt2img(self, progress_callback):
-
-        results = gr.prompt2image(prompt   = "an astronaut riding a horse",
-                                    outdir   = "./outputs/")
-        for row in results:
-            print(f'filename={row[0]}')
-            print(f'seed    ={row[1]}')
-            output = f'outputs/sample.png'
-            row[0].save(output)
-            self.image_path = output
-
+def update(target, value):
+    print(type(target))
+    print(type(value))
+    target.setText(str(value.value()))
 
 if __name__ == "__main__":
     app = qtw.QApplication(sys.argv)
 
     mainWindow = GenerateWindow()
-    preview = Preview()
-    txt2img = Txt2img()
-    anim = Anim()
-    #preview.scene = QGraphicsScene()
-    #preview.graphicsView.setScene(preview.scene)
 
-    mainWindow.setCentralWidget(preview)
-    mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, txt2img)
-    mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, anim)
+
+    threadpool = QThreadPool()
+
 
     mainWindow.show()
+    mainWindow.txt2img.pushButton.clicked.connect(mainWindow.txt2img_thread)
+    mainWindow.txt2img.height.valueChanged.connect(mainWindow.updateHeight)
+
+    #mainWindow.txt2img.height.valueChanged.connect(update(mainWindow.txt2img.height_edit, mainWindow.txt2img.height))
+
     sys.exit(app.exec())

@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>150</width>
-    <height>501</height>
+    <width>348</width>
+    <height>617</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Text-to-Image</string>
   </property>
   <property name="styleSheet">
    <string notr="true">/*
@@ -301,13 +301,13 @@ QMenu::separator {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>150</width>
+     <width>151</width>
      <height>500</height>
     </rect>
    </property>
    <property name="maximumSize">
     <size>
-     <width>150</width>
+     <width>200</width>
      <height>16777215</height>
     </size>
    </property>
@@ -334,10 +334,34 @@ QMenu::separator {
      </item>
      <item>
       <widget class="QSlider" name="height">
+       <property name="maximumSize">
+        <size>
+         <width>125</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="minimum">
+        <number>256</number>
+       </property>
+       <property name="maximum">
+        <number>2048</number>
+       </property>
+       <property name="singleStep">
+        <number>64</number>
+       </property>
+       <property name="pageStep">
+        <number>128</number>
+       </property>
+       <property name="value">
+        <number>512</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="height_edit"/>
      </item>
      <item>
       <widget class="QLabel" name="label_2">
@@ -354,6 +378,27 @@ QMenu::separator {
      </item>
      <item>
       <widget class="QSlider" name="width">
+       <property name="maximumSize">
+        <size>
+         <width>125</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="minimum">
+        <number>256</number>
+       </property>
+       <property name="maximum">
+        <number>2048</number>
+       </property>
+       <property name="singleStep">
+        <number>64</number>
+       </property>
+       <property name="pageStep">
+        <number>128</number>
+       </property>
+       <property name="value">
+        <number>512</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -374,6 +419,15 @@ QMenu::separator {
      </item>
      <item>
       <widget class="QSlider" name="steps">
+       <property name="maximumSize">
+        <size>
+         <width>125</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -394,6 +448,12 @@ QMenu::separator {
      </item>
      <item>
       <widget class="QSlider" name="samples">
+       <property name="maximumSize">
+        <size>
+         <width>125</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -417,6 +477,12 @@ QMenu::separator {
      </item>
      <item>
       <widget class="QSlider" name="batchsize">
+       <property name="maximumSize">
+        <size>
+         <width>125</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -442,6 +508,12 @@ QMenu::separator {
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>125</width>
+         <height>16777215</height>
+        </size>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -583,6 +655,13 @@ QMenu::separator {
          <string>random</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Generate</string>
+       </property>
       </widget>
      </item>
      <item>
