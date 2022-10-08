@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>164</width>
-    <height>349</height>
+    <width>376</width>
+    <height>552</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,7 +54,7 @@
     <item row="13" column="0">
      <widget class="QSlider" name="scaleSlider">
       <property name="maximum">
-       <number>180</number>
+       <number>100</number>
       </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -106,7 +106,13 @@
     <item row="5" column="0">
      <widget class="QSlider" name="samplesSlider">
       <property name="maximum">
-       <number>2000</number>
+       <number>50</number>
+      </property>
+      <property name="pageStep">
+       <number>1</number>
+      </property>
+      <property name="value">
+       <number>1</number>
       </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -147,6 +153,12 @@
       <property name="maximum">
        <number>200</number>
       </property>
+      <property name="pageStep">
+       <number>1</number>
+      </property>
+      <property name="value">
+       <number>1</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
@@ -173,7 +185,14 @@
      <widget class="QLCDNumber" name="stepsNumber"/>
     </item>
     <item row="13" column="1">
-     <widget class="QLCDNumber" name="scaleNumber"/>
+     <widget class="QLCDNumber" name="scaleNumber">
+      <property name="smallDecimalPoint">
+       <bool>false</bool>
+      </property>
+      <property name="segmentStyle">
+       <enum>QLCDNumber::Filled</enum>
+      </property>
+     </widget>
     </item>
     <item row="4" column="0">
      <widget class="QLabel" name="label_2">
@@ -264,22 +283,6 @@
     <hint type="destinationlabel">
      <x>126</x>
      <y>187</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>scaleSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>scaleNumber</receiver>
-   <slot>display(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>46</x>
-     <y>238</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>126</x>
-     <y>238</y>
     </hint>
    </hints>
   </connection>

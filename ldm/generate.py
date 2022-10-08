@@ -104,7 +104,7 @@ class Generate:
             iterations            = 1,
             steps                 = 50,
             cfg_scale             = 7.5,
-            weights               = 'models/sd-v1-4.ckpt',
+            weights               = 'models/ldm/stable-diffusion-v1/model.ckpt',
             config                = 'configs/stable-diffusion/v1-inference.yaml',
             grid                  = False,
             width                 = 512,
@@ -424,10 +424,10 @@ class Generate:
             try:
                 config = OmegaConf.load(self.config)
                 model = self._load_model_from_config(config, self.weights)
-                #if self.embedding_path is not None:
-                #    model.embedding_manager.load(
-                #        self.embedding_path, self.full_precision
-                #    )
+                if self.embedding_path is not None:
+                    model.embedding_manager.load(
+                        self.embedding_path, self.full_precision
+                    )
                 self.model = model.to(self.device)
                 # model.to doesn't change the cond_stage_model.device used to move the tokenizer output, so set it here
                 self.model.cond_stage_model.device = self.device

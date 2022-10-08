@@ -73,7 +73,7 @@ class QDMGraphicsView(QGraphicsView):
         self.setScene(self.grScene)
 
         self.mode = MODE_NOOP
-        self.editingFlag = False
+        self.editingFlag = True
         self.rubberBandDraggingRectangle = False
 
         # edge dragging

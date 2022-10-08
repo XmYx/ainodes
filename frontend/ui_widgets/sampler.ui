@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>Sampler</class>
+ <widget class="QWidget" name="Sampler">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>171</width>
-    <height>447</height>
+    <width>537</width>
+    <height>441</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Sampler</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>9</x>
      <y>9</y>
-     <width>135</width>
+     <width>188</width>
      <height>296</height>
     </rect>
    </property>
@@ -29,57 +29,50 @@
     <property name="rightMargin">
      <number>5</number>
     </property>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
+    <item row="6" column="0">
+     <widget class="QLineEdit" name="lineEdit"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>Steps</string>
+       <string>Seed</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>Seed Behavior</string>
       </property>
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QSlider" name="horizontalSlider_2">
-      <property name="maximum">
-       <number>180</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Scale</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QSlider" name="horizontalSlider">
-      <property name="maximum">
-       <number>300</number>
-      </property>
-      <property name="value">
-       <number>75</number>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="invertedAppearance">
-       <bool>false</bool>
-      </property>
-      <property name="invertedControls">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
      <widget class="QLabel" name="label_3">
       <property name="text">
        <string>Sampler</string>
       </property>
      </widget>
     </item>
-    <item row="5" column="0">
+    <item row="4" column="0">
+     <widget class="QComboBox" name="comboBox_2">
+      <item>
+       <property name="text">
+        <string>bicubic</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>bilinear</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>nearest</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="2" column="0">
      <widget class="QComboBox" name="comboBox">
       <item>
        <property name="text">
@@ -123,50 +116,7 @@
       </item>
      </widget>
     </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Sample Mode</string>
-      </property>
-     </widget>
-    </item>
-    <item row="7" column="0">
-     <widget class="QComboBox" name="comboBox_2">
-      <item>
-       <property name="text">
-        <string>bicubic</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>bilinear</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>nearest</string>
-       </property>
-      </item>
-     </widget>
-    </item>
     <item row="8" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>Seed</string>
-      </property>
-     </widget>
-    </item>
-    <item row="9" column="0">
-     <widget class="QLineEdit" name="lineEdit"/>
-    </item>
-    <item row="10" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>Seed Behavior</string>
-      </property>
-     </widget>
-    </item>
-    <item row="11" column="0">
      <widget class="QComboBox" name="comboBox_3">
       <item>
        <property name="text">
@@ -183,6 +133,20 @@
         <string>random</string>
        </property>
       </item>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Sample Mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QCheckBox" name="seamless">
+      <property name="text">
+       <string>Seamless</string>
+      </property>
      </widget>
     </item>
    </layout>

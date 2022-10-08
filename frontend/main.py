@@ -1,8 +1,9 @@
+from PyQt5.QtWidgets import QApplication
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6 import QtWidgets as qtw
 import sys
-app = qtw.QApplication(sys.argv)
+app = QApplication(sys.argv)
 pixmap = QPixmap('frontend/main/splash.png')
 splash = QSplashScreen(pixmap)
 splash.show()
@@ -12,8 +13,10 @@ splash.show()
 import random
 
 from ui_classes import *
+
 from nodeeditor.utils import loadStylesheet
 from nodeeditor.node_editor_window import NodeEditorWindow
+from frontend.example_calculator.calc_window import CalculatorWindow
 from qtpy.QtWidgets import QApplication as qapp
 
 
@@ -43,6 +46,10 @@ settings.load_settings_json()
 gs = singleton
 
 gs.result = ""
+
+from backend.ui_func import getLatestGeneratedImagesFromPath
+
+gs.album = getLatestGeneratedImagesFromPath()
 
 class WorkerSignals(QObject):
     '''
@@ -125,6 +132,17 @@ class GenerateWindow(QMainWindow):
         uic.loadUi("frontend/main/main_window.ui", self)
 
         self.home()
+        self.load_history()
+        #self.show_anim()
+
+        self.actionAnim.triggered.connect(self.show_anim)
+        self.actionPreview.triggered.connect(self.show_preview)
+        self.actionPrompt.triggered.connect(self.show_prompt)
+        self.actionRunControl.triggered.connect(self.show_runner)
+        self.actionSampler.triggered.connect(self.show_sampler)
+        self.actionSliders.triggered.connect(self.show_sizer_count)
+        self.actionThumbnails.triggered.connect(self.show_thumbnails)
+
     def home(self):
 
         self.preview = Preview()
@@ -139,8 +157,10 @@ class GenerateWindow(QMainWindow):
         #self.nodes = NodeEditorWindow()
         #self.nodes.nodeeditor.addNodes()
 
+        #wnd.show()
+
         self.thumbnails.thumbs.itemClicked.connect(self.viewImageClicked)
-        self.thumbnails.thumbs.addItem(QListWidgetItem(QIcon('frontend/main/splash.png'), "Earth"))
+        #self.thumbnails.thumbs.addItem(QListWidgetItem(QIcon('frontend/main/splash.png'), "Earth"))
 
         self.preview.scene = QGraphicsScene()
         self.preview.graphicsView.setScene(self.preview.scene)
@@ -153,13 +173,49 @@ class GenerateWindow(QMainWindow):
         self.sizer_count.scaleNumber.display(str(self.sizer_count.scaleSlider.value()))
 
 
+
         self.setCentralWidget(self.preview)
+
         self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.sizer_count)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.sampler)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.runner)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.anim)
+        #self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.anim)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.prompt)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, self.thumbnails)
+
+        self.thumbnails.thumbsZoom.valueChanged.connect(self.updateThumbsZoom)
+
+
+
+
+    def updateThumbsZoom(self):
+        size = self.thumbnails.thumbsZoom.value()
+        self.thumbnails.thumbs.setGridSize(QSize(size, size))
+        self.thumbnails.thumbs.setIconSize(QSize(size, size))
+    def update_scaleNumber(self):
+        float = self.sizer_count.scaleSlider.value() / 1000
+        self.sizer_count.scaleNumber.display(str(float))
+
+
+    def show_anim(self):
+        self.anim.show()
+    def show_preview(self):
+        self.preview.show()
+    def show_prompt(self):
+        self.prompt.show()
+    def show_runner(self):
+        self.runner.show()
+    def show_sampler(self):
+        self.sampler.show()
+    def show_sizer_count(self):
+        self.sizer_count.show()
+    def show_thumbnails(self):
+        self.thumbnails.show()
+
+    def load_history(self):
+
+        for image in gs.album:
+            self.thumbnails.thumbs.addItem(QListWidgetItem(QIcon(image), str(image)))
 
     def viewImageClicked(self, item):
         #self.preview.setPixmap(item.image())
@@ -173,16 +229,60 @@ class GenerateWindow(QMainWindow):
         self.preview.scene.addItem(pic)
 
     def run_txt2img(self, progress_callback):
-        results = gr.prompt2image(prompt   = self.prompt.textEdit.toPlainText(),
-                                  outdir   = "./outputs/")
-        for row in results:
-            print(f'filename={row[0]}')
-            print(f'seed    ={row[1]}')
-            filename = random.randint(10000, 99999)
-            output = f'outputs/{filename}.png'
-            row[0].save(output)
-            self.thumbnails.thumbs.addItem(QListWidgetItem(QIcon(output), "Earth"))
-        self.image_path = output
+
+        width=self.sizer_count.widthSlider.value()
+        height=self.sizer_count.heightSlider.value()
+        scale=self.sizer_count.scaleSlider.value()
+        steps=self.sizer_count.stepsSlider.value()
+        samples=self.sizer_count.samplesSlider.value()
+        batchsize=self.sizer_count.batchSizeSlider.value()
+        seamless=self.sampler.seamless.isChecked()
+
+
+        """The full list of arguments to Generate() are:
+        gr = Generate(
+                  weights     = path to model weights ('models/ldm/stable-diffusion-v1/model.ckpt')
+                  config     = path to model configuraiton ('configs/stable-diffusion/v1-inference.yaml')
+                  iterations  = <integer>     // how many times to run the sampling (1)
+                  steps       = <integer>     // 50
+                  seed        = <integer>     // current system time
+                  sampler_name= ['ddim', 'k_dpm_2_a', 'k_dpm_2', 'k_euler_a', 'k_euler', 'k_heun', 'k_lms', 'plms']  // k_lms
+                  grid        = <boolean>     // false
+                  width       = <integer>     // image width, multiple of 64 (512)
+                  height      = <integer>     // image height, multiple of 64 (512)
+                  cfg_scale   = <float>       // condition-free guidance scale (7.5)
+                  )
+
+"""
+
+        all_images = []
+        for i in range(batchsize):
+
+            results = gr.prompt2image(prompt   = self.prompt.textEdit.toPlainText(),
+                                      outdir   = "./outputs/",
+                                      cfg_scale = scale,
+                                      width  = width,
+                                      height = height,
+                                      iterations = samples,
+                                      steps = steps,
+                                      seamless = seamless)
+            for row in results:
+                print(f'filename={row[0]}')
+                print(f'seed    ={row[1]}')
+                filename = random.randint(10000, 99999)
+                output = f'outputs/{filename}.png'
+                row[0].save(output)
+                self.image_path = output
+                self.get_pic
+                self.thumbnails.thumbs.addItem(QListWidgetItem(QIcon(output), str(self.prompt.textEdit.toPlainText())))
+            #all_images.append(results)
+
+            #return all_images
+
+
+
+
+
 
 
 
@@ -205,18 +305,35 @@ def update(target, value):
     print(type(target))
     print(type(value))
     target.setText(str(value.value()))
+class CalculatorWin(CalculatorWindow):
+    def __init__(self, *args, **kwargs):
+
+
+
+
+        app2 = qapp(sys.argv)
+        nodes = CalculatorWindow()
+        nodes.show()
+        app2.exec()
+def show_nodes():
+    #in main thread:
+    CalculatorWin()
+
+    #in a separate thread
+    #worker = Worker(CalculatorWin) # Any other args, kwargs are passed to the run function
+    # Execute
+    #threadpool.start(worker)
 
 if __name__ == "__main__":
 
     mainWindow = GenerateWindow()
     threadpool = QThreadPool()
     mainWindow.show()
-    app2 = qapp(sys.argv)
-    wnd = NodeEditorWindow()
-    wnd.nodeeditor.addNodes()
-
     splash.finish(mainWindow)
+    #mainWindow.thumbnails.setGeometry(680,0,800,600)
 
     mainWindow.runner.runButton.clicked.connect(mainWindow.txt2img_thread)
+    mainWindow.actionNodes.triggered.connect(show_nodes)
+    mainWindow.sizer_count.scaleSlider.valueChanged.connect(mainWindow.update_scaleNumber)
 
     sys.exit(app.exec())
