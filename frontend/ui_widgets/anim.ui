@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>111</width>
+    <width>180</width>
     <height>206</height>
    </rect>
   </property>
@@ -313,11 +313,17 @@ QMenu::separator {
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>90</width>
-     <height>129</height>
+     <width>109</width>
+     <height>148</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="leftMargin">
+     <number>5</number>
+    </property>
+    <property name="rightMargin">
+     <number>5</number>
+    </property>
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
@@ -373,6 +379,19 @@ QMenu::separator {
        </property>
       </item>
      </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
