@@ -106,25 +106,36 @@ class GenerateWindow(QMainWindow):
         self.home()
     def home(self):
         self.preview = Preview()
-        self.txt2img = Txt2img()
+        self.sizer_count = SizerCount()
+        self.sampler = Sampler()
+        self.runner = Runner()
         self.anim = Anim()
         self.prompt = Prompt()
         self.preview.scene = QGraphicsScene()
         self.preview.graphicsView.setScene(self.preview.scene)
-        self.txt2img.height_edit.setText(str(self.txt2img.height.value()))
-
-
-
+        self.sizer_count.heightNumber.display(str(self.sizer_count.heightSlider.value()))
+        self.sizer_count.widthNumber.display(str(self.sizer_count.widthSlider.value()))
+        self.sizer_count.samplesNumber.display(str(self.sizer_count.samplesSlider.value()))
+        self.sizer_count.batchSizeNumber.display(str(self.sizer_count.batchSizeSlider.value()))
 
 
 
         self.setCentralWidget(self.preview)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.txt2img)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.sizer_count)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.sampler)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.runner)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.anim)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.prompt)
 
     def updateHeight(self):
-        self.txt2img.height_edit.setText(str(self.txt2img.height.value()))
+        self.sizer_count.heightNumber.display(str(self.sizer_count.heightSlider.value()))
+    def updateWidth(self):
+        self.sizer_count.widthNumber.display(str(self.sizer_count.widthSlider.value()))
+    def updateSamples(self):
+        self.sizer_count.samplesNumber.display(str(self.sizer_count.samplesSlider.value()))
+    def updateBatchSize(self):
+        self.sizer_count.batchSizeNumber.display(str(self.sizer_count.batchSizeSlider.value()))
+
     def run_txt2img(self, progress_callback):
         results = gr.prompt2image(prompt   = self.prompt.textEdit.toPlainText(),
                                   outdir   = "./outputs/")
@@ -200,8 +211,12 @@ if __name__ == "__main__":
 
 
     mainWindow.show()
-    mainWindow.txt2img.pushButton.clicked.connect(mainWindow.txt2img_thread)
-    mainWindow.txt2img.height.valueChanged.connect(mainWindow.updateHeight)
+    mainWindow.runner.runButton.clicked.connect(mainWindow.txt2img_thread)
+    mainWindow.sizer_count.heightSlider.valueChanged.connect(mainWindow.updateHeight)
+    mainWindow.sizer_count.widthSlider.valueChanged.connect(mainWindow.updateWidth)
+    mainWindow.sizer_count.samplesSlider.valueChanged.connect(mainWindow.updateSamples)
+    mainWindow.sizer_count.batchSizeSlider.valueChanged.connect(mainWindow.updateBatchSize)
+
 
     #mainWindow.txt2img.height.valueChanged.connect(update(mainWindow.txt2img.height_edit, mainWindow.txt2img.height))
 

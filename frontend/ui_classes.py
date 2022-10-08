@@ -1,10 +1,20 @@
 from PyQt6 import uic
 from PyQt6.QtWidgets import QDockWidget, QGraphicsScene
 
-class Txt2img(QDockWidget):
+class SizerCount(QDockWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        uic.loadUi("frontend/ui_widgets/txt2img_params.ui", self)
+        uic.loadUi("frontend/ui_widgets/sizer_count.ui", self)
+
+class Sampler(QDockWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        uic.loadUi("frontend/ui_widgets/sampler.ui", self)
+
+class Runner(QDockWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        uic.loadUi("frontend/ui_widgets/runner.ui", self)
 
 class Prompt(QDockWidget):
     def __init__(self, *args, **kwargs):
