@@ -33,3 +33,6 @@ models/sd-v1-4.ckpt
 frontend/ui_widgets/__pycache__/__init__.cpython-38.pyc
 frontend/ui_widgets/__pycache__/test_widget.cpython-38.pyc
 outputs/*
+frontend/__pycache__/ui_classes.cpython-38.pyc
+*.pyc
+*.pyc

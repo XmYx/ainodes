@@ -32,3 +32,8 @@ class Preview(QDockWidget):
         uic.loadUi("frontend/ui_widgets/preview.ui", self)
         self.scene = QGraphicsScene()
         self.graphicsView.setScene(self.scene)
+
+class Thumbnails(QDockWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        uic.loadUi("frontend/ui_widgets/thumbnails.ui", self)

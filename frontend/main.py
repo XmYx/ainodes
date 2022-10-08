@@ -1,12 +1,30 @@
+from PyQt6.QtWidgets import *
+from PyQt6.QtGui import *
+from PyQt6 import QtWidgets as qtw
+import sys
+app = qtw.QApplication(sys.argv)
+pixmap = QPixmap('frontend/main/splash.png')
+splash = QSplashScreen(pixmap)
+splash.show()
+
+
+
+import random
+
 from ui_classes import *
+from nodeeditor.utils import loadStylesheet
+from nodeeditor.node_editor_window import NodeEditorWindow
+from qtpy.QtWidgets import QApplication as qapp
+
+
 from PyQt6 import uic
 from PyQt6.QtCore import *
-from PyQt6.QtGui import *
-from PyQt6.QtWidgets import *
 
-import sys, traceback, time
+
+
+import traceback, time
 from PyQt6 import QtCore
-from PyQt6 import QtWidgets as qtw
+
 from PyQt6 import QtCore as qtc
 from PyQt6.QtGui import QIcon, QPixmap
 
@@ -17,10 +35,13 @@ gr = Generate(  weights     = 'models/sd-v1-4.ckpt',
                 )
 
 from backend.singleton import singleton
+
 import backend.settings as settings
 settings.load_settings_json()
 
+
 gs = singleton
+
 gs.result = ""
 
 class WorkerSignals(QObject):
@@ -105,19 +126,31 @@ class GenerateWindow(QMainWindow):
 
         self.home()
     def home(self):
+
         self.preview = Preview()
         self.sizer_count = SizerCount()
         self.sampler = Sampler()
         self.runner = Runner()
         self.anim = Anim()
         self.prompt = Prompt()
+        self.thumbnails = Thumbnails()
+
+        #app2  = qapp(sys.argv)
+        #self.nodes = NodeEditorWindow()
+        #self.nodes.nodeeditor.addNodes()
+
+        self.thumbnails.thumbs.itemClicked.connect(self.viewImageClicked)
+        self.thumbnails.thumbs.addItem(QListWidgetItem(QIcon('frontend/main/splash.png'), "Earth"))
+
         self.preview.scene = QGraphicsScene()
         self.preview.graphicsView.setScene(self.preview.scene)
+
         self.sizer_count.heightNumber.display(str(self.sizer_count.heightSlider.value()))
         self.sizer_count.widthNumber.display(str(self.sizer_count.widthSlider.value()))
         self.sizer_count.samplesNumber.display(str(self.sizer_count.samplesSlider.value()))
         self.sizer_count.batchSizeNumber.display(str(self.sizer_count.batchSizeSlider.value()))
-
+        self.sizer_count.stepsNumber.display(str(self.sizer_count.stepsSlider.value()))
+        self.sizer_count.scaleNumber.display(str(self.sizer_count.scaleSlider.value()))
 
 
         self.setCentralWidget(self.preview)
@@ -126,15 +159,18 @@ class GenerateWindow(QMainWindow):
         self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.runner)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.anim)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.prompt)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, self.thumbnails)
 
-    def updateHeight(self):
-        self.sizer_count.heightNumber.display(str(self.sizer_count.heightSlider.value()))
-    def updateWidth(self):
-        self.sizer_count.widthNumber.display(str(self.sizer_count.widthSlider.value()))
-    def updateSamples(self):
-        self.sizer_count.samplesNumber.display(str(self.sizer_count.samplesSlider.value()))
-    def updateBatchSize(self):
-        self.sizer_count.batchSizeNumber.display(str(self.sizer_count.batchSizeSlider.value()))
+    def viewImageClicked(self, item):
+        #self.preview.setPixmap(item.image())
+        #pic = QImage(item[0])
+        imageSize = item.icon().actualSize(QSize(512, 512))
+
+        pic = QGraphicsPixmapItem()
+        pic.setPixmap(item.icon().pixmap(imageSize))
+
+
+        self.preview.scene.addItem(pic)
 
     def run_txt2img(self, progress_callback):
         results = gr.prompt2image(prompt   = self.prompt.textEdit.toPlainText(),
@@ -142,16 +178,18 @@ class GenerateWindow(QMainWindow):
         for row in results:
             print(f'filename={row[0]}')
             print(f'seed    ={row[1]}')
-            output = f'outputs/sample.png'
+            filename = random.randint(10000, 99999)
+            output = f'outputs/{filename}.png'
             row[0].save(output)
+            self.thumbnails.thumbs.addItem(QListWidgetItem(QIcon(output), "Earth"))
         self.image_path = output
+
 
 
     def txt2img_thread(self):
         # Pass the function to execute
         worker = Worker(self.run_txt2img) # Any other args, kwargs are passed to the run function
         worker.signals.result.connect(self.get_pic)
-
         # Execute
         threadpool.start(worker)
     def get_pic(self): #from self.image_path
@@ -163,61 +201,22 @@ class GenerateWindow(QMainWindow):
 
         pixmap = QPixmap(self.image_path)
         self.preview.scene.addItem(pic)
-    #self.ui.label.setPixmap(pixmap)
-
-
-    #dock_widget = load_ui("ui/console.ui", main_window)
-        #main_window.addDockWidget(Qt.LeftDockWidgetArea, dock_widget)
-
-
-        #self.ui = Ui_Form()
-        #self.mw = qtw.QMainWindow()
-        #self.ui = Ui_MainWindow()
-        #self.test = Ui_Form()
-        #self.txt2img = Ui_txt2img_params()
-
-
-        #self.ui.setupUi(self)
-        #self.test.setupUi(self)
-        #self.txt2img.setupUi(self)
-
-        #self.mw.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, self.txt2img.dockWidget)
-        #print(self.dockWidget.preview.scene())
-
-
-
-
-        #self.show()
-        #self.txt2img = self.ui.dockWidget
-        #self.ui.preview = self.ui.dockWidget.preview
-        #self.test.scene = QGraphicsScene()
-        #self.test.graphicsView.setScene(self.test.scene)
-
-        #self.ui.actionText_2_Image.triggered.connect(self.txt2img.show)
-        #self.test.load_btn.clicked.connect(self.test1)
-        #self.ui.pushButton.clicked.connect(self.generate)
 def update(target, value):
     print(type(target))
     print(type(value))
     target.setText(str(value.value()))
 
 if __name__ == "__main__":
-    app = qtw.QApplication(sys.argv)
 
     mainWindow = GenerateWindow()
-
-
     threadpool = QThreadPool()
-
-
     mainWindow.show()
+    app2 = qapp(sys.argv)
+    wnd = NodeEditorWindow()
+    wnd.nodeeditor.addNodes()
+
+    splash.finish(mainWindow)
+
     mainWindow.runner.runButton.clicked.connect(mainWindow.txt2img_thread)
-    mainWindow.sizer_count.heightSlider.valueChanged.connect(mainWindow.updateHeight)
-    mainWindow.sizer_count.widthSlider.valueChanged.connect(mainWindow.updateWidth)
-    mainWindow.sizer_count.samplesSlider.valueChanged.connect(mainWindow.updateSamples)
-    mainWindow.sizer_count.batchSizeSlider.valueChanged.connect(mainWindow.updateBatchSize)
-
-
-    #mainWindow.txt2img.height.valueChanged.connect(update(mainWindow.txt2img.height_edit, mainWindow.txt2img.height))
 
     sys.exit(app.exec())
