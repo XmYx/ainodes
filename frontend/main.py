@@ -1,17 +1,23 @@
-from PyQt6.QtWidgets import QApplication
+
+
+from PyQt6.QtWidgets import QApplication, QGraphicsView
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6 import QtWidgets as qtw
+
 import sys
 app = QApplication(sys.argv)
 pixmap = QPixmap('frontend/main/splash.png')
 splash = QSplashScreen(pixmap)
 splash.show()
+
 #from PyQt6.Qt import *
 import transformers
 from transformers import CLIPTokenizer, CLIPTextModel
 from transformers import BertTokenizerFast
 import warnings
+
+from PyQt6.QtWidgets import *
 
 import random
 
@@ -25,14 +31,14 @@ from ui_classes import *
 
 from PyQt6 import uic
 from PyQt6.QtCore import *
-
+from PyQt6 import QtCore
+from PyQt6.QtGui import QIcon, QPixmap
 
 
 import traceback, time
-from PyQt6 import QtCore
+
 
 from PyQt6 import QtCore as qtc
-from PyQt6.QtGui import QIcon, QPixmap
 
 from ldm.generate import Generate
 
@@ -51,7 +57,6 @@ gs = singleton
 gs.result = ""
 
 from backend.ui_func import getLatestGeneratedImagesFromPath
-
 gs.album = getLatestGeneratedImagesFromPath()
 
 def prepare_loading():
@@ -133,7 +138,7 @@ import platform
 
 if "macOS" in platform.platform():
     gs.platform = "macOS"
-    prepare_loading()
+    #prepare_loading()
 
 class WorkerSignals(QObject):
     '''
@@ -290,10 +295,13 @@ class GenerateWindow(QMainWindow):
 
         self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.sizer_count)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.sampler)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.runner)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.runner)
         #self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.anim)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.prompt)
+
         self.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, self.thumbnails)
+
+        #self.resizeDocks({self.thumbnails}, {100}, QtWidgets.Horizontal);
 
         self.preview.scene = QGraphicsScene()
         self.preview.graphicsView.setScene(self.preview.scene)
@@ -303,13 +311,17 @@ class GenerateWindow(QMainWindow):
 
 
 
+
     def updateThumbsZoom(self):
         size = self.thumbnails.thumbsZoom.value()
         self.thumbnails.thumbs.setGridSize(QSize(size, size))
         self.thumbnails.thumbs.setIconSize(QSize(size, size))
     def update_scaleNumber(self):
-        float = self.sizer_count.scaleSlider.value() / 1000
+        float = self.sizer_count.scaleSlider.value() / 100
         self.sizer_count.scaleNumber.display(str(float))
+    def update_gfpganNumber(self):
+        float = self.sizer_count.gfpganSlider.value() / 10
+        self.sizer_count.gfpganNumber.display(str(float))
 
 
     def show_anim(self):
@@ -340,8 +352,11 @@ class GenerateWindow(QMainWindow):
         self.preview.pic = QGraphicsPixmapItem()
         self.preview.pic.setPixmap(item.icon().pixmap(imageSize))
 
+        self.preview.scene.clear()
 
         self.preview.scene.addItem(self.preview.pic)
+        self.preview.graphicsView.fitInView(self.preview.pic, Qt.AspectRatioMode.KeepAspectRatio)
+        #self.preview.graphicsView.setDragMode(QGraphicsView.RubberBandDrag)
         #self.preview.graphicsView.setDragMode(QGraphicsView.ScrollHandDrag)
 
         #self.preview.graphicsView.setPhoto(item.icon().pixmap(imageSize))
@@ -357,8 +372,15 @@ class GenerateWindow(QMainWindow):
         seamless=self.sampler.seamless.isChecked()
         full_precision=self.sampler.fullPrecision.isChecked()
         sampler=self.sampler.comboBox.currentText()
+        upscale=[self.sizer_count.upscaleSlider.value()]
+        gfpgan_strength=self.sizer_count.gfpganSlider.value() / 100
 
-        print(sampler)
+        if gs.defaults.general.default_path_mode == "subfolders":
+            outdir = gs.defaults.general.outdir
+        else:
+            outdir = f'{gs.defaults.general.outdir}/_batch_images'
+
+
 
 
         """The full list of arguments to Generate() are:
@@ -379,9 +401,10 @@ class GenerateWindow(QMainWindow):
 
         all_images = []
         for i in range(batchsize):
+            print(f"Full Precision {full_precision}")
 
             results = gr.prompt2image(prompt   = self.prompt.textEdit.toPlainText(),
-                                      outdir   = "./outputs/",
+                                      outdir   = outdir,
                                       cfg_scale = scale,
                                       width  = width,
                                       height = height,
@@ -389,6 +412,9 @@ class GenerateWindow(QMainWindow):
                                       steps = steps,
                                       seamless = seamless,
                                       sampler = sampler,
+                                      upscale = upscale,
+                                      gfpgan_strength = gfpgan_strength,
+                                      strength = 0.0,
                                       full_precision = full_precision)
             for row in results:
                 print(f'filename={row[0]}')
@@ -408,23 +434,45 @@ class GenerateWindow(QMainWindow):
 
 
 
-
+    def progressbar(self, progress_callback):
+        a = 0
+        b = 100
+        while b > 0:
+            a = a + 1
+            self.preview.progressBar.setValue(int(a))
+            time.sleep(1)
+            if b == 1:
+                b = 100
+    def progress_thread(self):
+        worker2 = Worker(self.progressbar)
+        #worker.signals.result.connect(self.get_pic)
+        # Execute
+        threadpool.start(worker2)
 
     def txt2img_thread(self):
         # Pass the function to execute
-        worker = Worker(self.run_txt2img) # Any other args, kwargs are passed to the run function
+        worker = Worker(self.run_txt2img)
         worker.signals.result.connect(self.get_pic)
         # Execute
         threadpool.start(worker)
+        #self.progress_thread()
     def get_pic(self): #from self.image_path
         print("ok")
         image_qt = QImage(self.image_path)
 
-        pic = QGraphicsPixmapItem()
-        pic.setPixmap(QPixmap.fromImage(image_qt))
+        self.preview.pic = QGraphicsPixmapItem()
+        self.preview.pic.setPixmap(QPixmap.fromImage(image_qt))
 
-        pixmap = QPixmap(self.image_path)
-        self.preview.scene.addItem(pic)
+        #pic = QPixmap(self.image_path)
+        self.preview.scene.clear()
+        self.preview.scene.addItem(self.preview.pic)
+
+        self.preview.graphicsView.fitInView(self.preview.pic, Qt.AspectRatioMode.KeepAspectRatio)
+        #self.preview.graphicsView.setDragMode(Qt.QGraphicsView.ScrollHandDrag)
+    def zoom_IN(self):
+        self.preview.graphicsView.scale(1.25, 1.25)
+    def zoom_OUT(self):
+        self.preview.graphicsView.scale(0.75, 0.75)
 def update(target, value):
     print(type(target))
     print(type(value))
@@ -454,10 +502,18 @@ if __name__ == "__main__":
     threadpool = QThreadPool()
     mainWindow.show()
     splash.finish(mainWindow)
+    #mainWindow.progress_thread()
+
     #mainWindow.thumbnails.setGeometry(680,0,800,600)
 
     mainWindow.runner.runButton.clicked.connect(mainWindow.txt2img_thread)
+    #mainWindow.runner.runButton.clicked.connect(mainWindow.progress_thread)
+
     #mainWindow.actionNodes.triggered.connect(show_nodes)
     mainWindow.sizer_count.scaleSlider.valueChanged.connect(mainWindow.update_scaleNumber)
+    mainWindow.sizer_count.gfpganSlider.valueChanged.connect(mainWindow.update_gfpganNumber)
+
+    mainWindow.preview.zoomInButton.clicked.connect(mainWindow.zoom_IN)
+    mainWindow.preview.zoomOutButton.clicked.connect(mainWindow.zoom_OUT)
 
     sys.exit(app.exec())

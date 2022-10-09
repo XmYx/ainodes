@@ -39,6 +39,7 @@ class PhotoViewer(QGraphicsView):
         self._photo = QGraphicsPixmapItem()
         self._scene.addItem(self._photo)
         self.setScene(self._scene)
+        #self.setDragMode(QtWidgets.QGraphicsView.RubberBandDrag)
         #self.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
         #self.setResizeAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
         #self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -75,7 +76,8 @@ class PhotoViewer(QGraphicsView):
             self._photo.setPixmap(QtGui.QPixmap())
         self.fitInView()
 
-    def wheelEvent(self, event):
+
+    """def wheelEvent(self, event):
         if self.hasPhoto():
             if event.angleDelta().y() > 0:
                 factor = 1.25
@@ -88,7 +90,7 @@ class PhotoViewer(QGraphicsView):
             elif self._zoom == 0:
                 self.fitInView()
             else:
-                self._zoom = 0
+                self._zoom = 0"""
 
     def toggleDragMode(self):
         if self.dragMode() == QtWidgets.QGraphicsView.ScrollHandDrag:
@@ -112,7 +114,9 @@ class Preview(QDockWidget):
         #self.graphicsView = PhotoViewer(self)
         #self.scene = QGraphicsScene()
         #self.graphicsView.setScene(self.scene)
-    def wheelEvent(self, event):
+
+
+    """def wheelEvent(self, event):
 
         if event.angleDelta().y() > 0:
             factor = 1.25
@@ -126,7 +130,7 @@ class Preview(QDockWidget):
             #self.graphicsView.fitInView()
             self._zoom = 1
         else:
-            self._zoom = 0
+            self._zoom = 0"""
 
 
 class Thumbnails(QDockWidget):

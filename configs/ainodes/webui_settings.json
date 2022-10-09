@@ -8,7 +8,7 @@
     "default_model": "Stable Diffusion v1.4",
     "default_model_config": "diffusion/configs/stable-diffusion/v1-inference.yaml",
     "default_model_ckpt": "diffusion/models/sd-v1-4.ckpt",
-    "default_path_mode": "root",
+    "default_path_mode": "subfolders",
     "default_path_mode_index": 1,
 
     "outdir_txt2img": "outputs/txt2img-samples",
