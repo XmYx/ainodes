@@ -227,7 +227,7 @@ class GenerateWindow(QMainWindow):
         self.actionAnim.triggered.connect(self.show_anim)
         self.actionPreview.triggered.connect(self.show_preview)
         self.actionPrompt.triggered.connect(self.show_prompt)
-        self.actionRunControl.triggered.connect(self.show_runner)
+        #self.actionRunControl.triggered.connect(self.show_runner)
         self.actionSampler.triggered.connect(self.show_sampler)
         self.actionSliders.triggered.connect(self.show_sizer_count)
         self.actionThumbnails.triggered.connect(self.show_thumbnails)
@@ -266,7 +266,7 @@ class GenerateWindow(QMainWindow):
         self.preview = Preview()
         self.sizer_count = SizerCount()
         self.sampler = Sampler()
-        self.runner = Runner()
+        #self.runner = Runner()
         self.anim = Anim()
         self.prompt = Prompt()
         self.thumbnails = Thumbnails()
@@ -293,9 +293,10 @@ class GenerateWindow(QMainWindow):
 
         self.setCentralWidget(self.preview)
 
-        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.sizer_count)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.sampler)
-        self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.runner)
+        self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.sizer_count)
+
+        #self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.runner)
         #self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.anim)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.prompt)
 
@@ -307,6 +308,7 @@ class GenerateWindow(QMainWindow):
         self.preview.graphicsView.setScene(self.preview.scene)
 
         self.thumbnails.thumbsZoom.valueChanged.connect(self.updateThumbsZoom)
+        self.thumbnails.refresh.clicked.connect(self.load_history)
 
 
 
@@ -330,8 +332,8 @@ class GenerateWindow(QMainWindow):
         self.preview.show()
     def show_prompt(self):
         self.prompt.show()
-    def show_runner(self):
-        self.runner.show()
+    #def show_runner(self):
+        #self.runner.show()
     def show_sampler(self):
         self.sampler.show()
     def show_sizer_count(self):
@@ -340,7 +342,7 @@ class GenerateWindow(QMainWindow):
         self.thumbnails.show()
 
     def load_history(self):
-
+        self.thumbnails.thumbs.clear()
         for image in gs.album:
             self.thumbnails.thumbs.addItem(QListWidgetItem(QIcon(image), str(image)))
 
@@ -357,7 +359,7 @@ class GenerateWindow(QMainWindow):
         self.preview.scene.addItem(self.preview.pic)
         self.preview.graphicsView.fitInView(self.preview.pic, Qt.AspectRatioMode.KeepAspectRatio)
         #self.preview.graphicsView.setDragMode(QGraphicsView.RubberBandDrag)
-        #self.preview.graphicsView.setDragMode(QGraphicsView.ScrollHandDrag)
+        self.preview.graphicsView.setDragMode(QGraphicsView.DragMode.ScrollHandDrag)
 
         #self.preview.graphicsView.setPhoto(item.icon().pixmap(imageSize))
 
@@ -506,7 +508,7 @@ if __name__ == "__main__":
 
     #mainWindow.thumbnails.setGeometry(680,0,800,600)
 
-    mainWindow.runner.runButton.clicked.connect(mainWindow.txt2img_thread)
+    mainWindow.prompt.runButton.clicked.connect(mainWindow.txt2img_thread)
     #mainWindow.runner.runButton.clicked.connect(mainWindow.progress_thread)
 
     #mainWindow.actionNodes.triggered.connect(show_nodes)
