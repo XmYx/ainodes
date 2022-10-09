@@ -7,7 +7,7 @@ app = QApplication(sys.argv)
 pixmap = QPixmap('frontend/main/splash.png')
 splash = QSplashScreen(pixmap)
 splash.show()
-
+from PyQt6.Qt import *
 
 
 import random
@@ -143,6 +143,35 @@ class GenerateWindow(QMainWindow):
         self.actionSliders.triggered.connect(self.show_sizer_count)
         self.actionThumbnails.triggered.connect(self.show_thumbnails)
 
+        #self.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
+        #self.setResizeAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
+
+        #self.pix_map_item = self.preview.scene.addPixmap(self.pix_map)
+        """self.global_factor = 1
+        self.pix_map_item = QGraphicsPixmapItem()
+
+    def scaleImage(self, factor):
+        _pixmap = self.pic.scaledToHeight(int(factor*self.viewport().geometry().height()), Qt.SmoothTransformation)
+        self.pix_map_item.setPixmap(_pixmap)
+        self.preview.scene.setSceneRect(QRectF(_pixmap.rect()))
+
+    def wheelEvent(self, event):
+        factor = 1.5
+
+        if QApplication.keyboardModifiers() == Qt.ControlModifier:
+            view_pos = event.pos()
+            scene_pos = self.mapToScene(view_pos)
+            self.centerOn(scene_pos)
+
+            if event.angleDelta().y() > 0 and self.global_factor < 20:
+                self.global_factor *= factor
+                self.scaleImage(self.global_factor)
+            elif event.angleDelta().y() < 0 and self.global_factor > 0.2:
+                self.global_factor /= factor
+                self.scaleImage(self.global_factor)
+        else:
+            return super().wheelEvent(event)"""
+
     def home(self):
 
         self.preview = Preview()
@@ -162,8 +191,7 @@ class GenerateWindow(QMainWindow):
         self.thumbnails.thumbs.itemClicked.connect(self.viewImageClicked)
         #self.thumbnails.thumbs.addItem(QListWidgetItem(QIcon('frontend/main/splash.png'), "Earth"))
 
-        self.preview.scene = QGraphicsScene()
-        self.preview.graphicsView.setScene(self.preview.scene)
+
 
         self.sizer_count.heightNumber.display(str(self.sizer_count.heightSlider.value()))
         self.sizer_count.widthNumber.display(str(self.sizer_count.widthSlider.value()))
@@ -182,6 +210,9 @@ class GenerateWindow(QMainWindow):
         #self.addDockWidget(QtCore.Qt.DockWidgetArea.LeftDockWidgetArea, self.anim)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.BottomDockWidgetArea, self.prompt)
         self.addDockWidget(QtCore.Qt.DockWidgetArea.RightDockWidgetArea, self.thumbnails)
+
+        self.preview.scene = QGraphicsScene()
+        self.preview.graphicsView.setScene(self.preview.scene)
 
         self.thumbnails.thumbsZoom.valueChanged.connect(self.updateThumbsZoom)
 
@@ -222,11 +253,14 @@ class GenerateWindow(QMainWindow):
         #pic = QImage(item[0])
         imageSize = item.icon().actualSize(QSize(512, 512))
 
-        pic = QGraphicsPixmapItem()
-        pic.setPixmap(item.icon().pixmap(imageSize))
+        self.preview.pic = QGraphicsPixmapItem()
+        self.preview.pic.setPixmap(item.icon().pixmap(imageSize))
 
 
-        self.preview.scene.addItem(pic)
+        self.preview.scene.addItem(self.preview.pic)
+        #self.preview.graphicsView.setDragMode(QGraphicsView.ScrollHandDrag)
+
+        #self.preview.graphicsView.setPhoto(item.icon().pixmap(imageSize))
 
     def run_txt2img(self, progress_callback):
 
@@ -300,7 +334,7 @@ class GenerateWindow(QMainWindow):
         pic.setPixmap(QPixmap.fromImage(image_qt))
 
         pixmap = QPixmap(self.image_path)
-        self.preview.scene.addItem(pic)
+        self.preview._scene.addItem(pic)
 def update(target, value):
     print(type(target))
     print(type(value))

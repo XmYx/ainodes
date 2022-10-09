@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>226</height>
+    <width>677</width>
+    <height>935</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -27,6 +27,18 @@
      <width>381</width>
      <height>281</height>
     </rect>
+   </property>
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="resizeAnchor">
+    <enum>QGraphicsView::AnchorUnderMouse</enum>
    </property>
   </widget>
  </widget>
