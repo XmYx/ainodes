@@ -7,17 +7,20 @@ app = QApplication(sys.argv)
 pixmap = QPixmap('frontend/main/splash.png')
 splash = QSplashScreen(pixmap)
 splash.show()
-from PyQt6.Qt import *
-
+#from PyQt6.Qt import *
+import transformers
+from transformers import CLIPTokenizer, CLIPTextModel
+from transformers import BertTokenizerFast
+import warnings
 
 import random
 
 from ui_classes import *
 
-from nodeeditor.utils import loadStylesheet
-from nodeeditor.node_editor_window import NodeEditorWindow
-from frontend.example_calculator.calc_window import CalculatorWindow
-from qtpy.QtWidgets import QApplication as qapp
+#from nodeeditor.utils import loadStylesheet
+#from nodeeditor.node_editor_window import NodeEditorWindow
+#from frontend.example_calculator.calc_window import CalculatorWindow
+#from qtpy.QtWidgets import QApplication as qapp
 
 
 from PyQt6 import uic
@@ -50,6 +53,87 @@ gs.result = ""
 from backend.ui_func import getLatestGeneratedImagesFromPath
 
 gs.album = getLatestGeneratedImagesFromPath()
+
+def prepare_loading():
+    transformers.logging.set_verbosity_error()
+
+    # this will preload the Bert tokenizer fles
+    print('preloading bert tokenizer...')
+
+    tokenizer = BertTokenizerFast.from_pretrained('bert-base-uncased')
+    print('...success')
+
+    # this will download requirements for Kornia
+    print('preloading Kornia requirements (ignore the deprecation warnings)...')
+    with warnings.catch_warnings():
+        warnings.filterwarnings('ignore', category=DeprecationWarning)
+        import kornia
+    print('...success')
+
+    version = 'openai/clip-vit-large-patch14'
+
+    print('preloading CLIP model (Ignore the deprecation warnings)...')
+    sys.stdout.flush()
+
+    tokenizer = CLIPTokenizer.from_pretrained(version)
+    transformer = CLIPTextModel.from_pretrained(version)
+    print('\n\n...success')
+
+    # In the event that the user has installed GFPGAN and also elected to use
+    # RealESRGAN, this will attempt to download the model needed by RealESRGANer
+    gfpgan = False
+    try:
+        from realesrgan import RealESRGANer
+
+        gfpgan = True
+    except ModuleNotFoundError:
+        pass
+
+    if gfpgan:
+        print('Loading models from RealESRGAN and facexlib')
+        try:
+            from basicsr.archs.rrdbnet_arch import RRDBNet
+            from facexlib.utils.face_restoration_helper import FaceRestoreHelper
+
+            RealESRGANer(
+                scale=2,
+                model_path='https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth',
+                model=RRDBNet(
+                    num_in_ch=3,
+                    num_out_ch=3,
+                    num_feat=64,
+                    num_block=23,
+                    num_grow_ch=32,
+                    scale=2,
+                ),
+            )
+
+            RealESRGANer(
+                scale=4,
+                model_path='https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth',
+                model=RRDBNet(
+                    num_in_ch=3,
+                    num_out_ch=3,
+                    num_feat=64,
+                    num_block=23,
+                    num_grow_ch=32,
+                    scale=4,
+                ),
+            )
+
+            FaceRestoreHelper(1, det_model='retinaface_resnet50')
+            print('...success')
+        except Exception:
+            import traceback
+
+            print('Error loading GFPGAN:')
+            print(traceback.format_exc())
+
+import platform
+
+if "macOS" in platform.platform():
+    gs.platform = "macOS"
+    prepare_loading()
 
 class WorkerSignals(QObject):
     '''
@@ -271,6 +355,10 @@ class GenerateWindow(QMainWindow):
         samples=self.sizer_count.samplesSlider.value()
         batchsize=self.sizer_count.batchSizeSlider.value()
         seamless=self.sampler.seamless.isChecked()
+        full_precision=self.sampler.fullPrecision.isChecked()
+        sampler=self.sampler.comboBox.currentText()
+
+        print(sampler)
 
 
         """The full list of arguments to Generate() are:
@@ -299,7 +387,9 @@ class GenerateWindow(QMainWindow):
                                       height = height,
                                       iterations = samples,
                                       steps = steps,
-                                      seamless = seamless)
+                                      seamless = seamless,
+                                      sampler = sampler,
+                                      full_precision = full_precision)
             for row in results:
                 print(f'filename={row[0]}')
                 print(f'seed    ={row[1]}')
@@ -334,12 +424,12 @@ class GenerateWindow(QMainWindow):
         pic.setPixmap(QPixmap.fromImage(image_qt))
 
         pixmap = QPixmap(self.image_path)
-        self.preview._scene.addItem(pic)
+        self.preview.scene.addItem(pic)
 def update(target, value):
     print(type(target))
     print(type(value))
     target.setText(str(value.value()))
-class CalculatorWin(CalculatorWindow):
+"""class CalculatorWin(CalculatorWindow):
     def __init__(self, *args, **kwargs):
 
 
@@ -348,15 +438,15 @@ class CalculatorWin(CalculatorWindow):
         app2 = qapp(sys.argv)
         nodes = CalculatorWindow()
         nodes.show()
-        app2.exec()
-def show_nodes():
+        app2.exec()"""
+"""def show_nodes():
     #in main thread:
     CalculatorWin()
 
     #in a separate thread
     #worker = Worker(CalculatorWin) # Any other args, kwargs are passed to the run function
     # Execute
-    #threadpool.start(worker)
+    #threadpool.start(worker)"""
 
 if __name__ == "__main__":
 
@@ -367,7 +457,7 @@ if __name__ == "__main__":
     #mainWindow.thumbnails.setGeometry(680,0,800,600)
 
     mainWindow.runner.runButton.clicked.connect(mainWindow.txt2img_thread)
-    mainWindow.actionNodes.triggered.connect(show_nodes)
+    #mainWindow.actionNodes.triggered.connect(show_nodes)
     mainWindow.sizer_count.scaleSlider.valueChanged.connect(mainWindow.update_scaleNumber)
 
     sys.exit(app.exec())

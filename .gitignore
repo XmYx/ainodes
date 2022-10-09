@@ -39,3 +39,11 @@ frontend/__pycache__/ui_classes.cpython-38.pyc
 *.pyc
 *.pyc
 *.pyc
+nodeeditor/.DS_Store
+ldm/modules/.DS_Store
+ldm/models/.DS_Store
+ldm/dream/.DS_Store
+ldm/.DS_Store
+frontend/.DS_Store
+configs/.DS_Store
+backend/.DS_Store

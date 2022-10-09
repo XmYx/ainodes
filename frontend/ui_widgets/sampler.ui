@@ -18,7 +18,7 @@
     <rect>
      <x>9</x>
      <y>9</y>
-     <width>188</width>
+     <width>248</width>
      <height>296</height>
     </rect>
    </property>
@@ -29,31 +29,38 @@
     <property name="rightMargin">
      <number>5</number>
     </property>
-    <item row="6" column="0">
+    <item row="7" column="0">
      <widget class="QLineEdit" name="lineEdit"/>
     </item>
-    <item row="5" column="0">
+    <item row="6" column="0">
      <widget class="QLabel" name="label_5">
       <property name="text">
        <string>Seed</string>
       </property>
      </widget>
     </item>
-    <item row="7" column="0">
+    <item row="8" column="0">
      <widget class="QLabel" name="label_6">
       <property name="text">
        <string>Seed Behavior</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item row="2" column="0">
      <widget class="QLabel" name="label_3">
       <property name="text">
        <string>Sampler</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
+    <item row="1" column="0">
+     <widget class="QCheckBox" name="seamless">
+      <property name="text">
+       <string>Seamless</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
      <widget class="QComboBox" name="comboBox_2">
       <item>
        <property name="text">
@@ -72,7 +79,33 @@
       </item>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Sample Mode</string>
+      </property>
+     </widget>
+    </item>
+    <item row="9" column="0">
+     <widget class="QComboBox" name="comboBox_3">
+      <item>
+       <property name="text">
+        <string>iter</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>fixed</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>random</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="3" column="0">
      <widget class="QComboBox" name="comboBox">
       <item>
        <property name="text">
@@ -116,36 +149,10 @@
       </item>
      </widget>
     </item>
-    <item row="8" column="0">
-     <widget class="QComboBox" name="comboBox_3">
-      <item>
-       <property name="text">
-        <string>iter</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>fixed</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>random</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Sample Mode</string>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="0">
-     <widget class="QCheckBox" name="seamless">
+     <widget class="QCheckBox" name="fullPrecision">
       <property name="text">
-       <string>Seamless</string>
+       <string>Full Precision</string>
       </property>
      </widget>
     </item>

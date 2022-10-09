@@ -13,7 +13,7 @@ def getLatestGeneratedImagesFromPath():
     if gs.defaults.general.default_path_mode == "subfolders":
         generatedImagesPath = gs.defaults.general.outdir
     else:
-        generatedImagesPath = f'{gs.defaults.general.outdir}/_batch_images'
+        generatedImagesPath = f'{gs.defaults.general.outdir}'
     os.makedirs(generatedImagesPath, exist_ok=True)
     # get all the files from the folders and subfolders
     files = []
